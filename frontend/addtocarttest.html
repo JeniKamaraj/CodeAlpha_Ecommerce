@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Add To Cart | EliteShop</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<header class="top-navbar">
+
+<div class="logo">
+<i class="fa-solid fa-bag-shopping"></i>
+Elite<span>Shop</span>
+
+</div>
+
+<div class="nav-buttons">
+
+<a href="index.html">Home</a>
+
+<a href="viewProducts.html">Products</a>
+
+<a href="cart.html">Cart</a>
+
+<a href="orderHistory.html">Orders</a>
+
+</div>
+
+</header>
+
+<div class="addcart-container">
+
+<div class="addcart-card">
+
+<h1>🛒 Add Product To Cart</h1>
+
+<p class="subtitle">
+
+Fill the details below
+
+</p>
+
+<form id="cartForm">
+
+<input
+type="number"
+id="user_id"
+placeholder="User ID"
+required>
+
+<input
+type="number"
+id="product_id"
+placeholder="Product ID"
+required>
+
+<input
+type="number"
+id="quantity"
+placeholder="Quantity"
+required>
+
+<button type="submit">
+
+Add To Cart
+
+</button>
+
+</form>
+
+<p id="message"></p>
+
+</div>
+
+</div>
+
+<script>
+
+document
+.getElementById("cartForm")
+.addEventListener("submit",
+async (e) => {
+
+    e.preventDefault();
+
+    const user_id =
+    document.getElementById("user_id").value;
+
+    const product_id =
+    document.getElementById("product_id").value;
+
+    const quantity =
+    document.getElementById("quantity").value;
+
+    const response =
+    await fetch(
+        "http://localhost:3000/api/cart/add",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                user_id,
+                product_id,
+                quantity
+            })
+        }
+    );
+
+    const data =
+    await response.json();
+
+    document
+    .getElementById("message")
+    .innerText =
+    data.message;
+
+});
+
+</script>
+
+</body>
+
+</html>

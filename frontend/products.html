@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Products</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <h2>All Products</h2>
+
+    <div id="productList"></div>
+
+    <script>
+
+        async function loadProducts() {
+
+            const response =
+                await fetch(
+                    "http://localhost:3000/api/products"
+                );
+
+            const products =
+                await response.json();
+
+            let output = "";
+
+            products.forEach(product => {
+                output += `
+            <div class="product-card">
+                <h3>${product.name}</h3>
+
+                <p>${product.description}</p>
+
+                <p class="price">
+                    ₹${product.price}
+                </p>
+
+            <p class="stock">
+                Stock: ${product.stock}
+                </p>
+                </div>
+                    `;
+
+               
+            });
+
+            document
+                .getElementById("productList")
+                .innerHTML = output;
+        }
+
+        loadProducts();
+
+    </script>
+
+</body>
+</html>

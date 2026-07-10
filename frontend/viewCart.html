@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/style.css">
+    <title>My Cart</title>
+</head>
+
+<body>
+
+<header class="cart-navbar">
+
+    <h2>EliteShop</h2>
+
+    <nav>
+        
+
+        <a href="index.html">🏠Home</a>
+
+        <a href="viewProducts.html">📦Products</a>
+
+        <a href="orderHistory.html">🛍️Orders</a>
+
+    </nav>
+
+</header>
+
+<div class="cart-container">
+
+    <div>
+
+        <h1>🛒 My Shopping Cart</h1>
+
+        <div id="cartList"></div>
+
+    </div>
+
+    <div class="summary">
+
+        <h2>Order Summary</h2>
+
+        <hr>
+
+        <h3 id="total">Total : ₹0</h3>
+ <button
+class="checkoutBtn"
+onclick="window.location.href='checkout.html'">
+
+    Proceed To Checkout
+
+</button>              
+        
+        
+
+    </div>
+
+</div>
+
+<script>
+
+async function loadCart(){
+
+    const response =
+    await fetch(
+        "http://localhost:3000/api/cart"
+    );
+
+    const items =
+    await response.json();
+
+    let output = "";
+
+    let total = 0;
+
+    items.forEach(item => {
+
+        const subtotal =
+        item.price * item.quantity;
+
+        total += subtotal;
+
+        output += `
+
+<div class="cart-card">
+
+    <div class="cart-image">
+
+        <img src="https://picsum.photos/150?random=${item.id}" alt="Product">
+
+    </div>
+
+    <div class="cart-details">
+
+        <h2>${item.name}</h2>
+
+        <p class="cart-price">
+            ₹${item.price}
+        </p>
+
+        <p>
+            Subtotal :
+            ₹${subtotal}
+        </p>
+
+        <div class="quantity-box">
+
+            <button onclick="changeQuantity(${item.id}, ${item.quantity-1})">
+                -
+            </button>
+
+            <span>${item.quantity}</span>
+
+            <button onclick="changeQuantity(${item.id}, ${item.quantity+1})">
+                +
+            </button>
+
+        </div>
+
+        <button
+            class="removeBtn"
+            onclick="removeItem(${item.id})">
+
+            🗑 Remove
+
+        </button>
+
+    </div>
+
+</div>
+
+`;
+
+    });
+
+    document
+    .getElementById("cartList")
+    .innerHTML = output;
+
+    document
+    .getElementById("total")
+    .innerText =
+    "Total: ₹" + total;
+}
+
+loadCart();
+async function removeItem(id){
+
+    const response =
+    await fetch(
+        `http://localhost:3000/api/cart/${id}`,
+        {
+            method:"DELETE"
+        }
+    );
+
+    const data =
+    await response.json();
+
+    alert(data.message);
+
+    loadCart();
+}
+async function changeQuantity(id, quantity){
+
+    if(quantity < 1){
+        return;
+    }
+
+    const response =
+    await fetch(
+        `http://localhost:3000/api/cart/${id}`,
+        {
+            method:"PUT",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                quantity
+            })
+        }
+    );
+
+    const data =
+    await response.json();
+
+    console.log(data.message);
+
+    loadCart();
+}
+</script>
+
+</body>
+
+</html>

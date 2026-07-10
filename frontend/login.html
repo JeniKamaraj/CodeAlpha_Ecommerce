@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | EliteShop</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+    <div class="login-container">
+        <div class="login-left">
+            <div class="brand-pill">EliteShop</div>
+            <h1>Welcome back</h1>
+            <p>Sign in to continue your premium shopping journey with curated products and seamless delivery.</p>
+            <ul class="feature-list">
+                <li><i class="fa-solid fa-bolt"></i> Fast checkout</li>
+                <li><i class="fa-solid fa-shield-halved"></i> Secure account access</li>
+                <li><i class="fa-solid fa-truck-fast"></i> Express delivery</li>
+            </ul>
+        </div>
+
+        <div class="login-right">
+            <form id="loginForm" class="auth-form">
+                <h2>Login</h2>
+                <p class="subtitle">Sign in to your account</p>
+
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+
+                <p id="message" class="form-message" aria-live="polite"></p>
+
+                <p class="register-link">
+                    Don't have an account?
+                    <a href="register.html">Register</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function(e){
+
+            e.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch(
+                "http://localhost:3000/api/auth/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":"application/json"
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if(response.ok){
+                localStorage.setItem("token", data.token);
+                document.getElementById("message").innerText = "Login Successful";
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 500);
+            }else{
+                document.getElementById("message").innerText = data.message;
+            }
+
+        });
+    </script>
+</body>
+</html>

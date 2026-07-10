@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Checkout | EliteShop</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<header class="top-navbar">
+
+<div class="logo">
+
+Elite<span>Shop</span>
+
+</div>
+
+<div class="nav-buttons">
+
+<a href="index.html">Home</a>
+
+<a href="viewProducts.html">Products</a>
+
+<a href="cart.html">Cart</a>
+
+<a href="orderHistory.html">Orders</a>
+
+</div>
+
+</header>
+
+<div class="checkout-container">
+
+<div class="checkout-left">
+
+<h2>Shipping Details</h2>
+
+<input type="text" id="name" placeholder="Full Name">
+
+<input type="text" id="phone" placeholder="Phone Number">
+
+<textarea id="address"
+placeholder="Complete Address"></textarea>
+
+<input type="text" id="city" placeholder="City">
+
+<input type="text" id="pincode" placeholder="Pincode">
+
+<h2>Payment Method</h2>
+
+<div class="payment-option">
+
+    <input type="radio" id="cod" name="payment" checked>
+
+    <label for="cod">Cash On Delivery</label>
+
+</div>
+
+<div class="payment-option">
+
+    <input type="radio" id="upi" name="payment">
+
+    <label for="upi">UPI</label>
+
+</div>
+
+<div class="payment-option">
+
+    <input type="radio" id="card" name="payment">
+
+    <label for="card">Credit / Debit Card</label>
+
+</div>
+</div>
+
+<div class="checkout-right">
+
+<h2>Order Summary</h2>
+
+<div id="summary">
+
+Loading...
+
+</div>
+
+<h3 id="grandTotal">
+
+Grand Total : ₹0
+
+</h3>
+
+<button
+class="placeOrderBtn"
+onclick="placeOrder()">
+
+Place Order
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+let grandTotal = 0;
+
+async function loadSummary(){
+
+    const response = await fetch(
+        "http://localhost:3000/api/cart"
+    );
+
+    const items = await response.json();
+
+    let output = "";
+
+    grandTotal = 0;
+
+    items.forEach(item=>{
+
+        const subtotal = item.price * item.quantity;
+
+        grandTotal += subtotal;
+
+        output += `
+
+        <div class="summary-row">
+
+            <span>${item.name} × ${item.quantity}</span>
+
+            <span>₹${subtotal}</span>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById("summary").innerHTML = output;
+
+    document.getElementById("grandTotal").innerText =
+    "Grand Total : ₹" + grandTotal;
+
+}
+
+async function placeOrder(){
+
+    try{
+
+        const response = await fetch(
+            "http://localhost:3000/api/orders/place",
+            {
+                method:"POST"
+            }
+        );
+
+        const data = await response.json();
+
+        alert(data.message);
+
+        window.location.href = "orderHistory.html";
+
+    }
+    catch(err){
+
+        console.log(err);
+
+        alert("Failed to place order");
+
+    }
+
+}
+
+loadSummary();
+
+</script>
+
+</body>
+
+</html>

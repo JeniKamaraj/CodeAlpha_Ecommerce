@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>My Orders | EliteShop</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<header class="top-navbar">
+
+<div class="logo">
+Elite<span>Shop</span>
+</div>
+
+<div class="nav-buttons">
+
+<a href="index.html"> 🏠 Home</a>
+
+<a href="viewProducts.html"> 📦 Products</a>
+
+<a href="viewCart.html"> 🛒 Cart</a>
+
+</div>
+
+</header>
+
+<section class="order-page">
+
+<h1>🛍️ My Orders</h1>
+
+<p class="subtitle">
+
+Track all your previous purchases
+
+</p>
+
+<div id="orders">
+
+</div>
+
+</section>
+
+<script>
+
+async function loadOrders(){
+
+    const response = await fetch("http://localhost:3000/api/orders");
+
+    const orders = await response.json();
+
+    let output = "";
+
+    if(orders.length === 0){
+
+        output = "<h2>No Orders Found</h2>";
+
+    }else{
+
+        orders.forEach(order=>{
+
+            output += `
+           <div class="order-card">
+
+    <div class="order-left">
+
+        <h2>Order #${order.id}</h2>
+
+        <p>Total Amount : ₹${order.total_amount}</p>
+
+        <p>
+        Order Date :
+        ${new Date(order.order_date).toLocaleString()}
+        </p>
+
+        <span class="order-status">
+        Delivered
+        </span>
+
+    </div>
+
+    <div class="order-right">
+
+        <div class="order-total">
+
+            ₹${order.total_amount}
+
+        </div>
+
+        <button class="invoiceBtn">
+
+            Invoice
+
+        </button>
+
+        <button class="trackBtn">
+
+            Track Order
+
+        </button>
+
+    </div>
+
+</div>
+            `;
+
+        });
+
+    }
+
+    document.getElementById("orders").innerHTML = output;
+
+}
+
+loadOrders();
+
+</script>
+
+</body>
+</html>

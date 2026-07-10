@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Products</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<header class="top-navbar">
+
+    <div class="logo">
+         <i class="fa-solid fa-bag-shopping"></i>
+        Elite<span>Shop</span>
+    </div>
+
+   <div class="search-container">
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Search products..."
+        onkeyup="searchProducts()">
+
+</div>
+    <div class="nav-buttons">
+
+        <a href="viewCart.html">🛒 Cart</a>
+
+        <a href="orderHistory.html">🛍️ Orders</a>
+
+        <a href="login.html">👤 Login</a>
+
+    </div>
+
+</header>
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <span class="hero-badge">Premium Electronics • Fast Delivery</span>
+
+        <h1>
+            Premium Shopping Experience
+        </h1>
+
+        <p>
+
+            Discover the latest electronics with amazing offers and fast delivery.
+
+        </p>
+
+        <button onclick="window.location='viewProducts.html'">
+
+            Shop Now
+
+        </button>
+
+    </div>
+
+</section>
+
+<section class="product-section">
+
+    <h2>
+
+        Featured Products
+
+    </h2>
+
+    <div class="products" id="products"></div>
+
+</section>
+
+<script>
+
+    function searchProducts(){
+
+    const keyword = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+    const filtered = window.allProducts.filter(product =>
+
+        product.name.toLowerCase().includes(keyword) ||
+
+        product.description.toLowerCase().includes(keyword)
+
+    );
+
+    displayProducts(filtered);
+
+}
+
+function displayProducts(products){
+
+    let output = "";
+
+    products.forEach(product => {
+
+        output += `
+<div class="product-card">
+
+    <div class="product-image">
+
+        <img src="images/laptop${product.id}.jpg" alt="${product.name}">
+
+        <span class="discount">20% OFF</span>
+
+        <button class="wishlist">❤</button>
+
+    </div>
+
+    <div class="product-info">
+
+        <span class="category">Electronics</span>
+
+        <h3>${product.name}</h3>
+
+        <p class="description">
+            ${product.description}
+        </p>
+
+        <div class="rating">
+            ⭐⭐⭐⭐⭐
+            <span>(120 Reviews)</span>
+        </div>
+
+        <div class="price-box">
+
+            <span class="price">
+                ₹${product.price}
+            </span>
+
+            <span class="old-price">
+                ₹${Math.round(product.price * 1.2)}
+            </span>
+
+        </div>
+
+        <p class="stock">
+            In Stock : ${product.stock}
+        </p>
+
+        <div class="buttons">
+
+            <button class="detailBtn"
+                onclick="viewDetails(${product.id})">
+
+                View Details
+
+            </button>
+
+            <button class="cartBtn"
+                onclick="addToCart(${product.id})">
+
+                Add To Cart
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+`;
+    });
+
+    document.getElementById("products").innerHTML = output;
+
+}
+
+async function loadProducts(){
+
+    const response=await fetch("http://localhost:3000/api/products");
+
+    const products=await response.json();
+
+    window.allProducts = products;
+
+    displayProducts(products);
+
+}
+
+function viewDetails(id){
+
+    window.location.href=
+    `productDetails.html?id=${id}`;
+
+}
+
+async function addToCart(productId){
+
+    const response=await fetch(
+    "http://localhost:3000/api/cart/add",
+    {
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            user_id:1,
+            product_id:productId,
+            quantity:1
+        })
+    });
+
+    const data=await response.json();
+
+    alert(data.message);
+
+}
+
+loadProducts();
+
+</script>
+
+</body>
+</html>
